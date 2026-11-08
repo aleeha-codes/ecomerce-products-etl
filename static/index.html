@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Data Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="hero">
+    <div class="hero-text">
+      <h1>E-Commerce Data Dashboard</h1>
+      <p>ETL pipeline and exploratory analysis of product data</p>
+    </div>
+    <button id="runBtn" class="btn">Run Pipeline</button>
+  </header>
+
+  <main class="container">
+
+    <!-- Error message -->
+    <div id="errorBox" class="error hidden"></div>
+
+    <!-- ===== PIPELINE STEPS ===== -->
+    <section class="card">
+      <h2>Pipeline Progress</h2>
+      <div id="steps" class="steps"></div>
+    </section>
+
+    <!-- ===== KPI CARDS ===== -->
+    <section id="kpis" class="kpis"></section>
+
+    <!-- ===== CHARTS ===== -->
+    <section class="grid-2">
+      <div class="card">
+        <h3>Products per Category</h3>
+        <div class="chart-box"><canvas id="chartCount"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Average Price by Category (Top 10)</h3>
+        <div class="chart-box"><canvas id="chartPrice"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Price Distribution</h3>
+        <div class="chart-box"><canvas id="chartHist"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Price vs Rating</h3>
+        <div class="chart-box"><canvas id="chartScatter"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Average Rating by Category</h3>
+        <div class="chart-box"><canvas id="chartRating"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Availability</h3>
+        <div class="chart-box"><canvas id="chartAvail"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ===== STATISTICS ===== -->
+    <section class="grid-2">
+      <div class="card">
+        <h3>Numeric Summary</h3>
+        <div class="table-wrap">
+          <table id="summaryTable"></table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Correlation Matrix</h3>
+        <div class="table-wrap">
+          <table id="corrTable" class="corr"></table>
+        </div>
+        <p class="hint">Blue = move together, red = move in opposite directions.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Price Outliers <span id="outlierNote" class="muted"></span></h3>
+      <div class="table-wrap">
+        <table id="outlierTable"></table>
+      </div>
+    </section>
+
+    <!-- ===== PRODUCTS TABLE ===== -->
+    <section class="card">
+      <div class="table-head">
+        <h3>Clean Products</h3>
+        <input id="search" type="search" placeholder="Search title, category or brand...">
+      </div>
+      <div class="table-wrap">
+        <table id="productTable"></table>
+      </div>
+      <div class="pager">
+        <button id="prevBtn" class="btn small">Previous</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" class="btn small">Next</button>
+      </div>
+    </section>
+
+    <!-- ===== REJECTED ===== -->
+    <section class="card">
+      <h3>Rejected Rows <span id="rejectNote" class="muted"></span></h3>
+      <div class="table-wrap">
+        <table id="rejectTable"></table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">Backend: Python, Flask and pandas &nbsp;|&nbsp; Frontend: HTML, CSS and JavaScript</footer>
+
+  <!-- Chart.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+
+</html>
