@@ -18,11 +18,13 @@ from flask import Flask, jsonify, send_from_directory
 
 import ecommerce_pipeline as pipeline  # your existing code
 
-# Make sure relative paths (output folder, raw_products.json) work from anywhere
+# Make sure paths work both locally and on Vercel (where only /tmp is writable)
 BASE_DIR = Path(__file__).resolve().parent
-os.chdir(BASE_DIR)
+OUTPUT_DIR = Path("/tmp/output") if os.environ.get("VERCEL") else (BASE_DIR / "output")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+os.environ["OUTPUT_DIR"] = str(OUTPUT_DIR)
 
-app = Flask(__name__, static_folder="static", static_url_path="/static")
+app = Flask(__name__, static_folder=str(BASE_DIR / "static"), static_url_path="/static")
 
 
 def to_records(df):
@@ -94,7 +96,7 @@ def build_report(clean, rejected):
 
 @app.route("/")
 def home():
-    return send_from_directory("static", "index.html")
+    return send_from_directory(str(BASE_DIR / "static"), "index.html")
 
 
 @app.route("/api/run")
@@ -115,7 +117,7 @@ def run_pipeline():
             {"name": "Extract", "detail": f"{len(products)} products downloaded"},
             {"name": "Transform", "detail": f"{df.shape[0]} rows, {df.shape[1]} columns cleaned"},
             {"name": "Validate", "detail": f"{len(clean)} valid, {len(rejected)} rejected, {duplicates} duplicates removed"},
-            {"name": "Load", "detail": "Saved to CSV and SQLite (output folder)"},
+            {"name": "Load", "detail": f"Saved to CSV and SQLite ({OUTPUT_DIR})"},
             {"name": "EDA", "detail": "Statistics and charts ready"},
         ]
         return jsonify(report)

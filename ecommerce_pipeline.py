@@ -2,26 +2,30 @@
 E-Commerce Products: ETL Pipeline + Exploratory Data Analysis
 
 Steps:
-  1. Extract   - get product data from the DummyJSON API
-  2. Transform - clean the data and add useful columns
-  3. Validate  - separate good rows from bad rows
-  4. Load      - save to CSV and SQLite
-  5. EDA       - print statistics and save charts
+1. Extract   - get product data from the DummyJSON API
+2. Transform - clean the data and add useful columns
+3. Validate  - separate good rows from bad rows
+4. Load      - save to CSV and SQLite
+5. EDA       - print statistics and save charts
 
 Install: pip install requests pandas matplotlib
 Run:     python ecommerce_pipeline.py
 """
 
 import logging
+import os
 import sqlite3
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 import requests
 
 API_URL = "https://dummyjson.com/products?limit=0"  # limit=0 -> all products
-OUTPUT_DIR = Path("output")
+OUTPUT_DIR = Path("/tmp/output") if os.environ.get("VERCEL") else Path("output")
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
@@ -117,7 +121,7 @@ def validate(df):
 # ---------------------------------------------------------------
 def load(clean, rejected):
     """Save the results to CSV files and a SQLite database."""
-    OUTPUT_DIR.mkdir(exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     clean.to_csv(OUTPUT_DIR / "clean_products.csv", index=False)
     rejected.to_csv(OUTPUT_DIR / "rejected_products.csv", index=False)
